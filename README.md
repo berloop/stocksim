@@ -1,4 +1,4 @@
-# stocksim
+# DSE Stocksim
 
 A Very Modern Stock Trading Simulator
 
