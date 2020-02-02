@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stocksim/simulation.dart';
+import 'package:http/http.dart' as http;
+import 'models/news.dart';
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +20,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+ List<NewsArticle> _newsList = new List();
+
+  void getData() async {
+    http.Response response = await http.get(
+        "https://newsapi.org/v2/top-headlines?country=us&apiKey=801889422ea1495ba303cce1978429f9");
+    setState(() {
+      _newsList = News.fromJson(json.decode(response.body)).articles;
+    });
+  }
   @override
+  void initState() {
+   super.initState();
+   getData();
+
+   
+}
+
+
+
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -182,27 +203,53 @@ class SimulatedTrading extends StatelessWidget {
 }
 
 class NewsFeeds extends StatelessWidget {
+
+  final List<NewsArticle> _newslist = new List();
+  
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
-      child: Card(
-        elevation: 15.0,
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.chrome_reader_mode, size: 128.0, color: Colors.pink),
-              Text(
-                "News Feeds",
-                style: TextStyle(fontSize: 20, fontFamily: 'Lato Bold'),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: new ListView.builder(
+          itemCount: _newslist.length,
+          itemBuilder: (context, int index) {
+            return Card(
+              elevation: 2.0,
+              child: new ListTile(
+                  onTap: () {
+                    print('Open Dataset');
+                  },
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  leading: Container(
+                    padding: EdgeInsets.only(right: 12.0),
+                    decoration: new BoxDecoration(
+                        border: new Border(
+                            right: new BorderSide(
+                                width: 1.0, color: Colors.pinkAccent))),
+                    child: Icon(Icons.account_balance, color: Colors.pink),
+                  ),
+                  title: Text(
+                    "CRDB",
+                    style:
+                        TextStyle(color: Colors.black, fontFamily: 'Lato Bold'),
+                  ),
+                  subtitle: Row(
+                    children: <Widget>[
+                      Icon(Icons.arrow_upward, color: Colors.green, size: 15.0),
+                      Text(
+                        " Opening Price: Tsh 785.00",
+                        style: TextStyle(
+                            color: Colors.green, fontFamily: 'Lato Medium'),
+                      ),
+                    ],
+                  ),
+                  trailing:
+                      Icon(Icons.keyboard_arrow_right, color: Colors.pink)),
+            );
+          }),
     );
   }
 }
@@ -232,3 +279,6 @@ class Portfolio extends StatelessWidget {
     );
   }
 }
+
+
+
