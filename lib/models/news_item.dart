@@ -7,7 +7,6 @@ class NewsListItem extends StatelessWidget {
   NewsListItem(this.newsArticle);
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Container(
         child: Row(
@@ -15,7 +14,7 @@ class NewsListItem extends StatelessWidget {
         Container(
           height: 80,
           width: 100,
-          child: Image.network(newsArticle.urlToImage),
+          child: Image.network(newsArticle.urlToImage,fit: BoxFit.fill,),
         ),
         Expanded(
           child: Padding(
@@ -28,7 +27,7 @@ class NewsListItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.left,
                     maxLines: 2,
-                    style: TextStyle(fontFamily: "Lato Bold", fontSize: 16),
+                    style: TextStyle(fontFamily: "Lato Bold", fontSize: 18),
                   ),
                   Text(
                     newsArticle.description,

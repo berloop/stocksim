@@ -1,7 +1,6 @@
-import 'package:http/http.dart';
 
 class NewsArticle {
-  List<NewsSource> source;
+  NewsSource source;
   String author;
   String title;
   String description;
@@ -10,9 +9,9 @@ class NewsArticle {
   String publishedAt;
   String content;
 
+ 
   NewsArticle.fromJson(Map<String, dynamic> articleJson)
-      : source = List.from(articleJson['sources'])
-            .map((sourceItem) => NewsSource.fromJson(sourceItem)),
+      : source = NewsSource.fromJson(articleJson['source']),
         author = articleJson['author'],
         title = articleJson['title'],
         description = articleJson['description'],
