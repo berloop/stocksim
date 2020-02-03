@@ -1,15 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stocksim/models/news_item.dart';
 import 'package:stocksim/simulation.dart';
 import 'package:http/http.dart' as http;
 import 'models/news.dart';
 import 'dart:convert';
 
-
-void main(){
+void main() {
+  //fixing async issue on main()..
   WidgetsFlutterBinding.ensureInitialized();
+  //locking device orientation..
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
   runApp(MyApp());
+
+  });
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -195,35 +203,57 @@ class NewsFeeds extends StatefulWidget {
 
 class _NewsFeedsState extends State<NewsFeeds> {
   List<NewsArticle> _newslist = new List();
-  
+
   void getData() async {
     http.Response response = await http.get(
-        "https://newsapi.org/v2/top-headlines?country=us&apiKey=801889422ea1495ba303cce1978429f9");
+        "https://newsapi.org/v2/top-headlines?category=business&apiKey=801889422ea1495ba303cce1978429f9");
     setState(() {
       _newslist = News.fromJson(json.decode(response.body)).articles;
     });
   }
 
+  void connectivityTest() async {
+    try {
+      //ping to google..
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+        this.getData();
+      }
+    } on SocketException catch (_) {
+      final snackBar = SnackBar(
+        content: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.error, size: 25.0, color: Colors.pink),
+            SizedBox(width: 3.0),
+            Text('It seems that you\'re Offline!',
+                style: TextStyle(
+                  color: Colors.pink,
+                )),
+          ],
+        ),
+      );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    this.getData();
+    this.connectivityTest();
   }
-    
-    
 
   @override
   Widget build(BuildContext context) {
-  
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.only(bottom:10.0),
       child: new ListView.builder(
           itemCount: _newslist.length,
           itemBuilder: (context, int index) {
-            return Card(
-              elevation: 2.0,
-              child: NewsListItem(_newslist[index])
-              );
+            return NewsListItem(_newslist[index]);
           }),
     );
   }
@@ -254,4 +284,3 @@ class Portfolio extends StatelessWidget {
     );
   }
 }
-

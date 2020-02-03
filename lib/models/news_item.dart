@@ -9,39 +9,12 @@ class NewsListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Row(
-      children: <Widget>[
-        Container(
-          height: 80,
-          width: 100,
-          child: Image.network(newsArticle.urlToImage,fit: BoxFit.fill,),
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    newsArticle.title,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    style: TextStyle(fontFamily: "Lato Bold", fontSize: 18),
-                  ),
-                  Text(
-                    newsArticle.description,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 12),
-                  )
-                ]),
+        height: 250.0,
+        child: Card(
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
           ),
-        )
-      ],
-    ));
+        ));
   }
-
-
 }
