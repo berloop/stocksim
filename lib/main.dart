@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stocksim/models/news_item.dart';
@@ -7,14 +6,78 @@ import 'package:stocksim/simulation.dart';
 import 'package:http/http.dart' as http;
 import 'models/news.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+
+//making network request..
+Future<List<LiveMarketPrices>> fetchPhotos(http.Client client) async {
+  final response = await client.get('https://api.myjson.com/bins/6s9va');
+
+  // Use the compute function to run parseMarketPrices in a separate isolate.
+  return compute(parseMarketPrices, response.body);
+}
+
+// A function that converts a response body into a List<Photo>.
+List<LiveMarketPrices> parseMarketPrices(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+
+  return parsed
+      .map<LiveMarketPrices>((json) => LiveMarketPrices.fromJson(json))
+      .toList();
+}
+
+class LiveMarketPrices {
+  final String board;
+  final double change;
+  final double close;
+  final String company;
+  final double high;
+  final double lastDealPrice;
+  final int lastTradedQuantity;
+  final double low;
+  final double marketCap;
+  final double openingPrice;
+  final String timestamp;
+  final int volume;
+
+  LiveMarketPrices(
+      {this.board,
+      this.change,
+      this.close,
+      this.company,
+      this.high,
+      this.lastDealPrice,
+      this.lastTradedQuantity,
+      this.low,
+      this.marketCap,
+      this.openingPrice,
+      this.timestamp,
+      this.volume});
+
+  factory LiveMarketPrices.fromJson(Map<String, dynamic> json) {
+    return LiveMarketPrices(
+      board: json['board'] as String,
+      change: json['change'] as double,
+      close: json['close'] as double,
+      company: json['company'] as String,
+      high: json['high'] as double,
+      lastDealPrice: json['lastDealPrice'] as double,
+      lastTradedQuantity: json['lastTradedQuantity'] as int,
+      low: json['low'] as double,
+      marketCap: json['marketCap'] as double,
+      openingPrice: json['openingPrice'] as double,
+      timestamp: json['timestamp'] as String,
+      volume: json['volume'] as int,
+    );
+  }
+}
 
 void main() {
   //fixing async issue on main()..
   WidgetsFlutterBinding.ensureInitialized();
   //locking device orientation..
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
-  runApp(MyApp());
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(MyApp());
   });
 }
 
@@ -32,6 +95,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final String appname = "Stock Trading Simulator";
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,8 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 )
               ],
-              title: new Text("DSE Stock Simulator",
-                  style: TextStyle(fontFamily: 'Lato Bold')),
+              title:
+                  new Text(appname, style: TextStyle(fontFamily: 'Lato Bold')),
               centerTitle: false,
               bottom: TabBar(
                 isScrollable: false,
@@ -249,7 +313,7 @@ class _NewsFeedsState extends State<NewsFeeds> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom:10.0),
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: new ListView.builder(
           itemCount: _newslist.length,
           itemBuilder: (context, int index) {

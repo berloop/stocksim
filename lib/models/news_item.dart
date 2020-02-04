@@ -10,11 +10,18 @@ class NewsListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 250.0,
-        child: Card(
-          elevation: 5.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-        ));
+        child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            child: Stack(children: <Widget>[
+              Container(
+                height: 170.0,
+                width: 250.0,
+                child: Image.asset(newsArticle.urlToImage, fit: BoxFit.cover),
+                decoration:
+                    BoxDecoration(color: Colors.black12.withOpacity(.2)),
+              ),
+            ])));
   }
 }
+
+// Image.network(photos[index].thumbnailUrl)
