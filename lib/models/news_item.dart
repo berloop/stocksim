@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'news.dart';
 
 class NewsListItem extends StatelessWidget {
@@ -8,20 +9,74 @@ class NewsListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 250.0,
-        child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            child: Stack(children: <Widget>[
-              Container(
-                height: 170.0,
-                width: 250.0,
-                child: Image.asset(newsArticle.urlToImage, fit: BoxFit.cover),
-                decoration:
-                    BoxDecoration(color: Colors.black12.withOpacity(.2)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+      child: Card(
+        elevation: 3.0,
+              child: ListTile(
+                onTap: () async{
+                  if(await canLaunch(newsArticle.url)){
+                    await launch(newsArticle.url);
+                  }
+                  else{
+                    throw 'Could not launch '+ newsArticle.url;
+                  }
+
+             
+                  
+                },
+               contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      child: Container(
+              width: MediaQuery.of(context).size.width *.2,
+              height: 600.0,
+              child: Image(
+                fit: BoxFit.cover,
+                image: NetworkImage(newsArticle.urlToImage,
+                scale: 5.0),
               ),
-            ])));
+            ),
+          ),
+          title: Column(
+            children: <Widget>[
+              Text(
+                newsArticle.title,
+                style: TextStyle(fontFamily: 'Lato Bold'),
+              ),
+              Text(
+                newsArticle.description,
+                style: TextStyle(
+                  fontFamily: 'Lato Medium',
+                fontSize: 12.0
+                  ),
+              ),
+            ],
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top:5.0),
+            child: Text(
+              "By "+ newsArticle.author,
+              style: TextStyle(
+                fontFamily: 'Lato Medium',
+                fontSize: 10.0),
+            ),
+          ),
+          isThreeLine: false,
+          trailing: Padding(
+            padding: const EdgeInsets.only(top:6.0),
+            child: Icon(Icons.keyboard_arrow_right),
+          ),
+        ),
+      ),
+    );
   }
 }
 
 // Image.network(photos[index].thumbnailUrl)
+
+// Image(
+//                 fit:BoxFit.contain,
+//                 alignment: Alignment.topRight,
+//                 image: NetworkImage(newsArticle.urlToImage),
+//               ),

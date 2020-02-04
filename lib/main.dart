@@ -238,6 +238,7 @@ class SimulatedTrading extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => SimulationScreen()),
                       );
+                     
                     },
                     splashColor: Colors.pinkAccent,
                     color: Colors.pink,
@@ -270,7 +271,7 @@ class _NewsFeedsState extends State<NewsFeeds> {
 
   void getData() async {
     http.Response response = await http.get(
-        "https://newsapi.org/v2/top-headlines?category=business&apiKey=801889422ea1495ba303cce1978429f9");
+        "https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=801889422ea1495ba303cce1978429f9");
     setState(() {
       _newslist = News.fromJson(json.decode(response.body)).articles;
     });
@@ -312,14 +313,14 @@ class _NewsFeedsState extends State<NewsFeeds> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: new ListView.builder(
-          itemCount: _newslist.length,
-          itemBuilder: (context, int index) {
-            return NewsListItem(_newslist[index]);
-          }),
-    );
+    return _newslist.isEmpty
+        ? Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            itemCount: 9,
+            itemBuilder: (context, index) {
+              return NewsListItem(_newslist[index]);
+            },
+          );
   }
 }
 
@@ -348,3 +349,15 @@ class Portfolio extends StatelessWidget {
     );
   }
 }
+
+
+
+
+// class Prices extends StatelessWidget {
+//   final LiveMarketPrices prices;
+//   Prices({this.prices});
+//   @override
+//   Widget build(BuildContext context) {
+//    return data;
+//   }
+// }
