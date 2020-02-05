@@ -121,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: TabBar(
                 isScrollable: false,
                 tabs: [
-                  Tab(text: "Live Market", icon: Icon(Icons.account_balance)),
+                  Tab(text: "AI-Data", icon: Icon(Icons.account_balance)),
                   Tab(text: "Simulation", icon: Icon(Icons.linear_scale)),
                   Tab(text: "News", icon: Icon(Icons.chrome_reader_mode)),
                   Tab(text: "Portfolio", icon: Icon(Icons.person_pin)),
