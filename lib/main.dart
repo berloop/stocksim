@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stocksim/models/news_item.dart';
-import 'package:stocksim/models/stock_prices.dart';
 import 'package:stocksim/simulation.dart';
 import 'package:http/http.dart' as http;
 import 'models/news.dart';
