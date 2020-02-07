@@ -2,22 +2,31 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stocksim/models/news_item.dart';
+import 'package:stocksim/models/stock_prices.dart';
 import 'package:stocksim/simulation.dart';
 import 'package:http/http.dart' as http;
 import 'models/news.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
-//making network request..
-Future<List<LiveMarketPrices>> fetchPhotos(http.Client client) async {
-  final response = await client.get('https://api.myjson.com/bins/6s9va');
+import 'models/prices.dart';
 
-  // Use the compute function to run parseMarketPrices in a separate isolate.
-  return compute(parseMarketPrices, response.body);
+//making network request..
+Future<List<LiveMarketPrices>> fetchLiveMarketPrices(http.Client client) async {
+  final response = await client.get('https://api.myjson.com/bins/u014y');
+
+  if (response.statusCode == 200) {
+    // If server returns an OK response, parse the JSON.
+    // Use the compute function to run parseMarketPrices in a separate isolate.
+    return compute(parseLiveMarketPrices, response.body);
+  } else {
+    // If that response was not OK, throw an error.
+    throw Exception('Failed to load Datasets');
+  }
 }
 
 // A function that converts a response body into a List<Photo>.
-List<LiveMarketPrices> parseMarketPrices(String responseBody) {
+List<LiveMarketPrices> parseLiveMarketPrices(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed
@@ -27,17 +36,17 @@ List<LiveMarketPrices> parseMarketPrices(String responseBody) {
 
 class LiveMarketPrices {
   final String board;
-  final double change;
-  final double close;
+  final String change;
+  final String close;
   final String company;
-  final double high;
-  final double lastDealPrice;
-  final int lastTradedQuantity;
-  final double low;
-  final double marketCap;
-  final double openingPrice;
+  final String high;
+  final String lastDealPrice;
+  final String lastTradedQuantity;
+  final String low;
+  final String marketCap;
+  final String openingPrice;
   final String timestamp;
-  final int volume;
+  final String volume;
 
   LiveMarketPrices(
       {this.board,
@@ -56,17 +65,17 @@ class LiveMarketPrices {
   factory LiveMarketPrices.fromJson(Map<String, dynamic> json) {
     return LiveMarketPrices(
       board: json['board'] as String,
-      change: json['change'] as double,
-      close: json['close'] as double,
+      change: json['change'] as String,
+      close: json['close'] as String,
       company: json['company'] as String,
-      high: json['high'] as double,
-      lastDealPrice: json['lastDealPrice'] as double,
-      lastTradedQuantity: json['lastTradedQuantity'] as int,
-      low: json['low'] as double,
-      marketCap: json['marketCap'] as double,
-      openingPrice: json['openingPrice'] as double,
+      high: json['high'] as String,
+      lastDealPrice: json['lastDealPrice'] as String,
+      lastTradedQuantity: json['lastTradedQuantity'] as String,
+      low: json['low'] as String,
+      marketCap: json['marketCap'] as String,
+      openingPrice: json['openingPrice'] as String,
       timestamp: json['timestamp'] as String,
-      volume: json['volume'] as int,
+      volume: json['volume'] as String,
     );
   }
 }
@@ -149,51 +158,81 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class LiveMarket extends StatelessWidget {
-  final List<String> items = [];
+class LiveMarket extends StatefulWidget {
+  @override
+  _LiveMarketState createState() => _LiveMarketState();
+}
+
+class _LiveMarketState extends State<LiveMarket> {
+  List<Note> _notes = List<Note>();
+
+  Future<List<Note>> fetchNotes() async {
+    var url =
+        "https://api.myjson.com/bins/1dln88";
+    var response = await http.get(url);
+
+    var notes = List<Note>();
+
+    if (response.statusCode == 200) {
+      var notesJson = json.decode(response.body);
+      for (var noteJson in notesJson) {
+        notes.add(Note.fromJson(noteJson));
+      }
+    }
+    return notes;
+  }
+
+  @override
+  void initState() {
+    fetchNotes().then((value) {
+      setState(() {
+        _notes.addAll(value);
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ListView.builder(
-        itemCount: 10,
-        //u can use items.length...
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            elevation: 2.0,
-            child: new ListTile(
-                onTap: () {
-                  print('Open Dataset');
-                },
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                leading: Container(
-                  padding: EdgeInsets.only(right: 12.0),
-                  decoration: new BoxDecoration(
-                      border: new Border(
-                          right: new BorderSide(
-                              width: 1.0, color: Colors.pinkAccent))),
-                  child: Icon(Icons.account_balance, color: Colors.pink),
-                ),
-                title: Text(
-                  "CRDB",
-                  style:
-                      TextStyle(color: Colors.black, fontFamily: 'Lato Bold'),
-                ),
-                subtitle: Row(
-                  children: <Widget>[
-                    Icon(Icons.arrow_upward, color: Colors.green, size: 15.0),
-                    Text(
-                      " Opening Price: Tsh 785.00",
-                      style: TextStyle(
-                          color: Colors.green, fontFamily: 'Lato Medium'),
-                    ),
-                  ],
-                ),
-                trailing: Icon(Icons.keyboard_arrow_right, color: Colors.pink)),
-          );
-        },
-      ),
+    
+    return _notes.isEmpty
+        ? Center(child: CircularProgressIndicator())
+        : ListView.builder(
+      itemCount: _notes.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+              onTap: () {
+                print('Open Dataset');
+              },
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+              leading: Container(
+                padding: EdgeInsets.only(right: 12.0),
+                decoration: new BoxDecoration(
+                    border: new Border(
+                        right: new BorderSide(
+                            width: 1.0, color: Colors.pinkAccent))),
+                child: Icon(Icons.account_balance, color: Colors.pink),
+              ),
+              // cart_prod_qty!=null?cart_prod_qty:'Default Value'
+              title: Text(
+                _notes[index].title,
+                style: TextStyle(color: Colors.black, fontFamily: 'Lato Bold'),
+              ),
+              subtitle: Row(
+                children: <Widget>[
+                  Icon(Icons.arrow_upward, color: Colors.green, size: 15.0),
+                  Text(
+                    _notes[index].text,
+                    style: TextStyle(
+                        color: Colors.green, fontFamily: 'Lato Medium'),
+                  ),
+                ],
+              ),
+              trailing: Icon(Icons.keyboard_arrow_right, color: Colors.pink)),
+        );
+      },
     );
   }
 }
@@ -238,7 +277,6 @@ class SimulatedTrading extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => SimulationScreen()),
                       );
-                     
                     },
                     splashColor: Colors.pinkAccent,
                     color: Colors.pink,
@@ -349,9 +387,6 @@ class Portfolio extends StatelessWidget {
     );
   }
 }
-
-
-
 
 // class Prices extends StatelessWidget {
 //   final LiveMarketPrices prices;
