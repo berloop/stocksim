@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'models/news.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-
 import 'models/prices.dart';
 
 //making network request..
@@ -219,10 +218,10 @@ class _LiveMarketState extends State<LiveMarket> {
     this.connectivityTest();
   }
 
-   String getDouble(String price) {
-   //my magic function..
-   var doubleValue = double.parse(price);
-   var fixedValue = doubleValue.toStringAsFixed(2);
+  String getDouble(String price) {
+    //my magic function..
+    var doubleValue = double.parse(price);
+    var fixedValue = doubleValue.toStringAsFixed(2);
     return fixedValue.toString();
   }
 
@@ -259,7 +258,9 @@ class _LiveMarketState extends State<LiveMarket> {
                         Icon(Icons.timeline, color: Colors.green, size: 15.0),
                         SizedBox(width: 4.0),
                         Text(
-                          "Priced at Tsh " + getDouble(_prices[index].openingPrice) + "/=",
+                          "Priced at Tsh " +
+                              getDouble(_prices[index].openingPrice) +
+                              "/=",
                           style: TextStyle(
                               color: Colors.green, fontFamily: 'Lato Medium'),
                         ),
@@ -424,11 +425,8 @@ class Portfolio extends StatelessWidget {
   }
 }
 
-// class Prices extends StatelessWidget {
-//   final LiveMarketPrices prices;
-//   Prices({this.prices});
-//   @override
-//   Widget build(BuildContext context) {
-//    return data;
-//   }
-// }
+// DateFormat dateFormat = DateFormat("MMMM dd, yyyy");
+// dateFormat.format(DateTime.now()),
+
+
+
