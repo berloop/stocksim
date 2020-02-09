@@ -12,29 +12,25 @@ class NewsListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
       child: Card(
-        elevation: 3.0,
-              child: ListTile(
-                onTap: () async{
-                  if(await canLaunch(newsArticle.url)){
-                    await launch(newsArticle.url);
-                  }
-                  else{
-                    throw 'Could not launch '+ newsArticle.url;
-                  }
-
-             
-                  
-                },
-               contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-          leading: ClipRRect(
+        elevation: 4.0,
+        child: ListTile(
+          onTap: () async {
+            if (await canLaunch(newsArticle.url)) {
+              await launch(newsArticle.url);
+            } else {
+              throw 'Could not launch ' + newsArticle.url;
+            }
+          },
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
+          trailing: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      child: Container(
-              width: MediaQuery.of(context).size.width *.2,
+            child: Container(
+              width: MediaQuery.of(context).size.width * .2,
               height: 600.0,
               child: Image(
                 fit: BoxFit.cover,
-                image: NetworkImage(newsArticle.urlToImage,
-                scale: 5.0),
+                image: NetworkImage(newsArticle.urlToImage, scale: 5.0),
               ),
             ),
           ),
@@ -46,27 +42,29 @@ class NewsListItem extends StatelessWidget {
               ),
               Text(
                 newsArticle.description,
-                style: TextStyle(
-                  fontFamily: 'Lato Medium',
-                fontSize: 12.0
-                  ),
+                style: TextStyle(fontFamily: 'Lato Medium', fontSize: 12.0),
               ),
             ],
           ),
           subtitle: Padding(
-            padding: const EdgeInsets.only(top:5.0),
-            child: Text(
-              "By "+ newsArticle.author,
-              style: TextStyle(
-                fontFamily: 'Lato Medium',
-                fontSize: 10.0),
+            padding: const EdgeInsets.only(top: 5.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+              Text(
+                 newsArticle.url.substring(0,37) + "....",
+                style: TextStyle(fontFamily: 'Lato Medium', fontSize: 10.0),
+              ),
+              SizedBox(width: 1.0),
+               
+            ],
             ),
           ),
           isThreeLine: false,
-          trailing: Padding(
-            padding: const EdgeInsets.only(top:6.0),
-            child: Icon(Icons.keyboard_arrow_right),
-          ),
+          // leading: Padding(
+          //   padding: const EdgeInsets.only(top: 6.0),
+          //   child: Icon(Icons.keyboard_arrow_right),
+          // ),
         ),
       ),
     );

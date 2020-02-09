@@ -63,18 +63,18 @@ class LiveMarketPrices {
 
   factory LiveMarketPrices.fromJson(Map<String, dynamic> json) {
     return LiveMarketPrices(
-      board: json['board'] as String,
-      change: json['change'] as String,
-      close: json['close'] as String,
-      company: json['company'] as String,
-      high: json['high'] as String,
-      lastDealPrice: json['lastDealPrice'] as String,
-      lastTradedQuantity: json['lastTradedQuantity'] as String,
-      low: json['low'] as String,
-      marketCap: json['marketCap'] as String,
-      openingPrice: json['openingPrice'] as String,
-      timestamp: json['timestamp'] as String,
-      volume: json['volume'] as String,
+      board: json['Board'] as String,
+      change: json['Change'] as String,
+      close: json['Close'] as String,
+      company: json['Company'] as String,
+      high: json['High'] as String,
+      lastDealPrice: json['LastDealPrice'] as String,
+      lastTradedQuantity: json['LastTradedQuantity'] as String,
+      low: json['Low'] as String,
+      marketCap: json['MarketCap'] as String,
+      openingPrice: json['OpeningPrice'] as String,
+      timestamp: json['Time'] as String,
+      volume: json['Volume'] as String,
     );
   }
 }
@@ -163,76 +163,113 @@ class LiveMarket extends StatefulWidget {
 }
 
 class _LiveMarketState extends State<LiveMarket> {
-  List<Note> _notes = List<Note>();
+  List<Prices> _prices = List<Prices>();
 
-  Future<List<Note>> fetchNotes() async {
-    var url =
-        "https://api.myjson.com/bins/1dln88";
+  Future<List<Prices>> fetchNotes() async {
+    var url = "https://abdulmtoro3.netlify.com/data/prices.json";
     var response = await http.get(url);
 
-    var notes = List<Note>();
+    var prices = List<Prices>();
 
     if (response.statusCode == 200) {
       var notesJson = json.decode(response.body);
       for (var noteJson in notesJson) {
-        notes.add(Note.fromJson(noteJson));
+        prices.add(Prices.fromJson(noteJson));
       }
     }
-    return notes;
+    return prices;
+  }
+
+  void connectivityTest() async {
+    try {
+      //ping to google..
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+        this.fetchNotes();
+      }
+    } on SocketException catch (_) {
+      final snackBar = SnackBar(
+        content: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.error, size: 25.0, color: Colors.pink),
+            SizedBox(width: 3.0),
+            Text('It seems that you\'re Offline!',
+                style: TextStyle(
+                  color: Colors.pink,
+                )),
+          ],
+        ),
+      );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
   void initState() {
     fetchNotes().then((value) {
       setState(() {
-        _notes.addAll(value);
+        _prices.addAll(value);
       });
     });
     super.initState();
+    this.connectivityTest();
+  }
+
+   String getDouble(String price) {
+   //my magic function..
+   var doubleValue = double.parse(price);
+   var fixedValue = doubleValue.toStringAsFixed(2);
+    return fixedValue.toString();
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    return _notes.isEmpty
+    return _prices.isEmpty
         ? Center(child: CircularProgressIndicator())
         : ListView.builder(
-      itemCount: _notes.length,
-      itemBuilder: (context, index) {
-        return Card(
-          child: ListTile(
-              onTap: () {
-                print('Open Dataset');
-              },
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              leading: Container(
-                padding: EdgeInsets.only(right: 12.0),
-                decoration: new BoxDecoration(
-                    border: new Border(
-                        right: new BorderSide(
-                            width: 1.0, color: Colors.pinkAccent))),
-                child: Icon(Icons.account_balance, color: Colors.pink),
-              ),
-              // cart_prod_qty!=null?cart_prod_qty:'Default Value'
-              title: Text(
-                _notes[index].title,
-                style: TextStyle(color: Colors.black, fontFamily: 'Lato Bold'),
-              ),
-              subtitle: Row(
-                children: <Widget>[
-                  Icon(Icons.arrow_upward, color: Colors.green, size: 15.0),
-                  Text(
-                    _notes[index].text,
-                    style: TextStyle(
-                        color: Colors.green, fontFamily: 'Lato Medium'),
-                  ),
-                ],
-              ),
-              trailing: Icon(Icons.keyboard_arrow_right, color: Colors.pink)),
-        );
-      },
-    );
+            itemCount: _prices.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                    onTap: () {
+                      print('Open Dataset');
+                    },
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    leading: Container(
+                      padding: EdgeInsets.only(right: 12.0),
+                      decoration: new BoxDecoration(
+                          border: new Border(
+                              right: new BorderSide(
+                                  width: 1.0, color: Colors.pinkAccent))),
+                      child: Icon(Icons.account_balance, color: Colors.pink),
+                    ),
+                    // cart_prod_qty!=null?cart_prod_qty:'Default Value'
+                    title: Text(
+                      _prices[index].company,
+                      style: TextStyle(
+                          color: Colors.black, fontFamily: 'Lato Bold'),
+                    ),
+                    subtitle: Row(
+                      children: <Widget>[
+                        Icon(Icons.timeline, color: Colors.green, size: 15.0),
+                        SizedBox(width: 4.0),
+                        Text(
+                          "Priced at Tsh " + getDouble(_prices[index].openingPrice) + "/=",
+                          style: TextStyle(
+                              color: Colors.green, fontFamily: 'Lato Medium'),
+                        ),
+                      ],
+                    ),
+                    trailing:
+                        Icon(Icons.keyboard_arrow_right, color: Colors.pink)),
+              );
+            },
+          );
   }
 }
 
