@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: TabBar(
                 isScrollable: false,
                 tabs: [
-                  Tab(text: "AI-Data", icon: Icon(Icons.account_balance)),
+                  Tab(text: "Overview", icon: Icon(Icons.account_balance)),
                   Tab(text: "Simulation", icon: Icon(Icons.linear_scale)),
                   Tab(text: "News", icon: Icon(Icons.chrome_reader_mode)),
                   Tab(text: "Portfolio", icon: Icon(Icons.person_pin)),
@@ -144,8 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
+              child: Icon(Icons.blur_linear),
               onPressed: () {
+                
                 print('Clicked Plus');
               },
             ),
@@ -225,6 +226,19 @@ class _LiveMarketState extends State<LiveMarket> {
     return fixedValue.toString();
   }
 
+  String getBillion(String cap) {
+    var doubleValue = double.parse(cap);
+    var billion = doubleValue / 1000000000;
+    var fixedBillion = billion.toStringAsFixed(2);
+    if (billion > 1000) {
+      var finalTrillion = billion / 1000;
+      var fixedTrillion = finalTrillion.toStringAsFixed(2);
+
+      return fixedTrillion.toString() + "Tr";
+    }
+    return fixedBillion.toString() + "Bn";
+  }
+
   @override
   Widget build(BuildContext context) {
     return _prices.isEmpty
@@ -232,45 +246,71 @@ class _LiveMarketState extends State<LiveMarket> {
         : ListView.builder(
             itemCount: _prices.length,
             itemBuilder: (context, index) {
-              return Card(
-                child: ListTile(
-                    onTap: () {
-                      print('Open Dataset');
-                    },
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                    leading: Container(
-                      padding: EdgeInsets.only(right: 12.0),
-                      decoration: new BoxDecoration(
-                          border: new Border(
-                              right: new BorderSide(
-                                  width: 1.0, color: Colors.pinkAccent))),
-                      child: Icon(Icons.account_balance, color: Colors.pink),
+              return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 5.0,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Text(
+                                  _prices[index].company,
+                                  style: TextStyle(
+                                      fontFamily: 'Lato Bold',
+                                      fontSize: 18.0,
+                                      color: Colors.pink),
+                                ),
+                                Spacer(),
+                                Icon(
+                                  Icons.add,
+                                  size: 15.0,
+                                ),
+                                Text(
+                                  getBillion(_prices[index].marketCap),
+                                  style: TextStyle(
+                                      fontFamily: 'Lato Bold', fontSize: 15.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Text(
+                                  "Tsh " +
+                                      getDouble(_prices[index].openingPrice),
+                                  style: TextStyle(
+                                      fontFamily: 'Lato Bold',
+                                      fontSize: 15.0,
+                                      color: Colors.black),
+                                ),
+                                Spacer(),
+                                Icon(
+                                  Icons.arrow_upward,
+                                  color: Colors.green,
+                                  size: 18.0,
+                                ),
+                                Text(getDouble(_prices[index].change) + "%",
+                                    style: TextStyle(
+                                        fontFamily: 'Lato Bold',
+                                        fontSize: 14.0))
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    // cart_prod_qty!=null?cart_prod_qty:'Default Value'
-                    title: Text(
-                      _prices[index].company,
-                      style: TextStyle(
-                          color: Colors.black, fontFamily: 'Lato Bold'),
-                    ),
-                    subtitle: Row(
-                      children: <Widget>[
-                        Icon(Icons.timeline, color: Colors.green, size: 15.0),
-                        SizedBox(width: 4.0),
-                        Text(
-                          "Priced at Tsh " +
-                              getDouble(_prices[index].openingPrice) +
-                              "/=",
-                          style: TextStyle(
-                              color: Colors.green, fontFamily: 'Lato Medium'),
-                        ),
-                      ],
-                    ),
-                    trailing:
-                        Icon(Icons.keyboard_arrow_right, color: Colors.pink)),
-              );
-            },
-          );
+                  ));
+            });
   }
 }
 
@@ -391,7 +431,7 @@ class _NewsFeedsState extends State<NewsFeeds> {
     return _newslist.isEmpty
         ? Center(child: CircularProgressIndicator())
         : ListView.builder(
-            itemCount: 9,
+            itemCount: 10,
             itemBuilder: (context, index) {
               return NewsListItem(_newslist[index]);
             },
@@ -427,6 +467,3 @@ class Portfolio extends StatelessWidget {
 
 // DateFormat dateFormat = DateFormat("MMMM dd, yyyy");
 // dateFormat.format(DateTime.now()),
-
-
-
