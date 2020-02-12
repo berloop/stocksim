@@ -103,8 +103,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
- 
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -115,23 +113,23 @@ class _MyHomePageState extends State<MyHomePage> {
       home: TabsView(),
     );
   }
-//  @override
-//   void initState() {
-//     super.initState();
-//     Future.delayed(
-//       Duration(
-//           seconds: 3),
-//       () {
-//         //then navigate to login screen
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => LoginPage(),
-//           ),
-//         );
-//       },
-//     );
-//   }
+
+  // @override
+  // // void initState() {
+  // //   super.initState();
+  // //   Future.delayed(
+  // //     Duration(seconds: 1),
+  // //     () {
+  // //       //then navigate to login screen
+  // //       Navigator.push(
+  // //         context,
+  // //         MaterialPageRoute(
+  // //           builder: (context) => LoginPage(),
+  // //         ),
+  // //       );
+  // //     },
+  // //   );
+  // // }
 }
 
 class LiveMarket extends StatefulWidget {
@@ -445,59 +443,54 @@ class Portfolio extends StatelessWidget {
 // DateFormat dateFormat = DateFormat("MMMM dd, yyyy");
 // dateFormat.format(DateTime.now()),
 
-
-
-
 class TabsView extends StatefulWidget {
   @override
   _TabsViewState createState() => _TabsViewState();
 }
 
 class _TabsViewState extends State<TabsView> {
-  final appname = "Vevisa Lodge";
+  final appname = "Stock Trading Simulator";
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 4,
-        child: new Scaffold(
-            appBar: new AppBar(
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () {
-                    print('Open Settings');
-                  },
-                )
-              ],
-              title:
-                  new Text(appname, style: TextStyle(fontFamily: 'Lato Bold')),
-              centerTitle: false,
-              bottom: TabBar(
-                isScrollable: false,
-                tabs: [
-                  Tab(text: "Overview", icon: Icon(Icons.account_balance)),
-                  Tab(text: "Simulation", icon: Icon(Icons.linear_scale)),
-                  Tab(text: "News", icon: Icon(Icons.chrome_reader_mode)),
-                  Tab(text: "Portfolio", icon: Icon(Icons.person_pin)),
-                ],
-              ),
-            ),
-            body: TabBarView(
-              children: [
-                LiveMarket(),
-                SimulatedTrading(),
-                NewsFeeds(),
-                Portfolio()
+      length: 4,
+      child: new Scaffold(
+          appBar: new AppBar(
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.more_vert),
+                onPressed: () {
+                  print('Open Settings');
+                },
+              )
+            ],
+            title: new Text(appname, style: TextStyle(fontFamily: 'Lato Bold')),
+            centerTitle: false,
+            bottom: TabBar(
+              isScrollable: false,
+              tabs: [
+                Tab(text: "Overview", icon: Icon(Icons.account_balance)),
+                Tab(text: "Simulation", icon: Icon(Icons.linear_scale)),
+                Tab(text: "News", icon: Icon(Icons.chrome_reader_mode)),
+                Tab(text: "Portfolio", icon: Icon(Icons.person_pin)),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.blur_linear),
-              onPressed: () {
-                print('Clicked Plus');
-              },
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.endFloat),
-      );
+          ),
+          body: TabBarView(
+            children: [
+              LiveMarket(),
+              SimulatedTrading(),
+              NewsFeeds(),
+              Portfolio()
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.blur_linear),
+            onPressed: () {
+              print('Clicked Plus');
+            },
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat),
+    );
   }
 }

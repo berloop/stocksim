@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stocksim/test.dart';
 import 'main.dart';
 import 'models/sign_in.dart';
 
@@ -40,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
-                    return MyHomePage();
+                    return TestPage();
                   },
                 ),
               );

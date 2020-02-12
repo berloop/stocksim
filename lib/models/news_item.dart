@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'news.dart';
-import 'package:transparent_image/transparent_image.dart';
+
 
 class NewsListItem extends StatelessWidget {
   final NewsArticle newsArticle;
