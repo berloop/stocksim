@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'news.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class NewsListItem extends StatelessWidget {
   final NewsArticle newsArticle;
@@ -28,9 +29,10 @@ class NewsListItem extends StatelessWidget {
             child: Container(
               width: MediaQuery.of(context).size.width * .2,
               height: 600.0,
-              child: Image(
+              child: FadeInImage.assetNetwork(
                 fit: BoxFit.cover,
-                image: NetworkImage(newsArticle.urlToImage, scale: 5.0),
+                placeholder: 'assets/gif/loading.gif',
+                image: newsArticle.urlToImage,
               ),
             ),
           ),
@@ -51,13 +53,13 @@ class NewsListItem extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-              Text(
-                 newsArticle.url.substring(0,37) + "....",
-                style: TextStyle(fontFamily: 'Lato Medium', fontSize: 10.0),
-              ),
-              SizedBox(width: 1.0),
-               
-            ],
+                Text(
+                  //shortening the URL...
+                  newsArticle.url.substring(0, 37) + "....",
+                  style: TextStyle(fontFamily: 'Lato Medium', fontSize: 10.0),
+                ),
+                SizedBox(width: 1.0),
+              ],
             ),
           ),
           isThreeLine: false,
@@ -78,3 +80,8 @@ class NewsListItem extends StatelessWidget {
 //                 alignment: Alignment.topRight,
 //                 image: NetworkImage(newsArticle.urlToImage),
 //               ),
+
+// FadeInImage.memoryNetwork(
+//   placeholder: kTransparentImage,
+//   image: 'https://picsum.photos/250?image=9',
+// );

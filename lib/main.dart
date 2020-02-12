@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:stocksim/models/news_item.dart';
 import 'package:stocksim/simulation.dart';
 import 'package:http/http.dart' as http;
+import 'login.dart';
 import 'models/news.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -102,59 +103,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final String appname = "Stock Trading Simulator";
+ 
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return new MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: new ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: DefaultTabController(
-        length: 4,
-        child: new Scaffold(
-            appBar: new AppBar(
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () {
-                    print('Open Settings');
-                  },
-                )
-              ],
-              title:
-                  new Text(appname, style: TextStyle(fontFamily: 'Lato Bold')),
-              centerTitle: false,
-              bottom: TabBar(
-                isScrollable: false,
-                tabs: [
-                  Tab(text: "Overview", icon: Icon(Icons.account_balance)),
-                  Tab(text: "Simulation", icon: Icon(Icons.linear_scale)),
-                  Tab(text: "News", icon: Icon(Icons.chrome_reader_mode)),
-                  Tab(text: "Portfolio", icon: Icon(Icons.person_pin)),
-                ],
-              ),
-            ),
-            body: TabBarView(
-              children: [
-                LiveMarket(),
-                SimulatedTrading(),
-                NewsFeeds(),
-                Portfolio()
-              ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.blur_linear),
-              onPressed: () {
-                
-                print('Clicked Plus');
-              },
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.endFloat),
-      ),
+      home: TabsView(),
     );
   }
+//  @override
+//   void initState() {
+//     super.initState();
+//     Future.delayed(
+//       Duration(
+//           seconds: 3),
+//       () {
+//         //then navigate to login screen
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//             builder: (context) => LoginPage(),
+//           ),
+//         );
+//       },
+//     );
+//   }
 }
 
 class LiveMarket extends StatefulWidget {
@@ -228,7 +205,7 @@ class _LiveMarketState extends State<LiveMarket> {
 
   String getBillion(String cap) {
     var doubleValue = double.parse(cap);
-    var billion = doubleValue / 1000000000;
+    var billion = doubleValue / 100000000;
     var fixedBillion = billion.toStringAsFixed(2);
     if (billion > 1000) {
       var finalTrillion = billion / 1000;
@@ -467,3 +444,60 @@ class Portfolio extends StatelessWidget {
 
 // DateFormat dateFormat = DateFormat("MMMM dd, yyyy");
 // dateFormat.format(DateTime.now()),
+
+
+
+
+class TabsView extends StatefulWidget {
+  @override
+  _TabsViewState createState() => _TabsViewState();
+}
+
+class _TabsViewState extends State<TabsView> {
+  final appname = "Vevisa Lodge";
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 4,
+        child: new Scaffold(
+            appBar: new AppBar(
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {
+                    print('Open Settings');
+                  },
+                )
+              ],
+              title:
+                  new Text(appname, style: TextStyle(fontFamily: 'Lato Bold')),
+              centerTitle: false,
+              bottom: TabBar(
+                isScrollable: false,
+                tabs: [
+                  Tab(text: "Overview", icon: Icon(Icons.account_balance)),
+                  Tab(text: "Simulation", icon: Icon(Icons.linear_scale)),
+                  Tab(text: "News", icon: Icon(Icons.chrome_reader_mode)),
+                  Tab(text: "Portfolio", icon: Icon(Icons.person_pin)),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                LiveMarket(),
+                SimulatedTrading(),
+                NewsFeeds(),
+                Portfolio()
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.blur_linear),
+              onPressed: () {
+                print('Clicked Plus');
+              },
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endFloat),
+      );
+  }
+}

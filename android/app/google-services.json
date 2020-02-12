@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "820930177230",
+    "firebase_url": "https://dse-flutter.firebaseio.com",
+    "project_id": "dse-flutter",
+    "storage_bucket": "dse-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820930177230:android:47408d7d83aa0403d4c89f",
+        "android_client_info": {
+          "package_name": "com.dsetz.stocksim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820930177230-k1v74o2ipdq0lk7akd638p3552ug9dqh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeKmgUhW_GtnUbsea8JS5FtUti39uiWbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820930177230-k1v74o2ipdq0lk7akd638p3552ug9dqh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
