@@ -35,11 +35,16 @@ class _TestPageState extends State<TestPage> {
                 minWidth: 120.0,
                 child: RaisedButton(
                   onPressed: () {
-                    signOutGoogle();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) {
-                      return LoginPage();
-                    }), ModalRoute.withName('/'));
+                    Future.delayed(
+                      Duration(seconds: 3),
+                      () {
+                        signOutGoogle();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) {
+                          return LoginPage();
+                        }), ModalRoute.withName('/'));
+                      },
+                    );
                   },
                   splashColor: Colors.pinkAccent,
                   color: Colors.pink,

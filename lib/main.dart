@@ -9,6 +9,7 @@ import 'models/news.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'models/prices.dart';
+import 'models/sign_in.dart';
 
 //making network request..
 Future<List<LiveMarketPrices>> fetchLiveMarketPrices(http.Client client) async {
@@ -85,15 +86,22 @@ void main() {
   //locking device orientation..
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
-    runApp(MyApp());
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: new ThemeData(
+        primarySwatch: Colors.pink,
+      ),
+      // Start the app with the "/" named route. In this case, the app starts
+      // on the FirstScreen widget.
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => LoginPage(),
+        // // When navigating to the "/second" route, build the SecondScreen widget.
+        // '/second': (context) => MyHomePage(),
+      },
+    ));
   });
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MyHomePage();
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -105,31 +113,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: new ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: TabsView(),
-    );
+    return TabsView();
   }
-
-  // @override
-  // // void initState() {
-  // //   super.initState();
-  // //   Future.delayed(
-  // //     Duration(seconds: 1),
-  // //     () {
-  // //       //then navigate to login screen
-  // //       Navigator.push(
-  // //         context,
-  // //         MaterialPageRoute(
-  // //           builder: (context) => LoginPage(),
-  // //         ),
-  // //       );
-  // //     },
-  // //   );
-  // // }
 }
 
 class LiveMarket extends StatefulWidget {
@@ -422,18 +407,44 @@ class Portfolio extends StatelessWidget {
       child: Card(
         elevation: 15.0,
         color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.person_pin, size: 128.0, color: Colors.pink),
-              Text(
-                "Portfolio",
-                style: TextStyle(fontSize: 20, fontFamily: 'Lato Bold'),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    child: Container(
+                      width: 90.0,
+                      height: 90.0,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: FadeInImage.assetNetwork(
+                        fit: BoxFit.fitHeight,
+                        placeholder: 'assets/gif/loading.gif',
+                        image: imageUrl,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      name,
+                      style: TextStyle(fontSize: 20, fontFamily: 'Lato Bold'),
+                    ),
+                  ),
+                  SizedBox(height: 15.0),
+                  Text(
+                    email,
+                    style: TextStyle(fontSize: 20, fontFamily: 'Lato Bold'),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -456,11 +467,17 @@ class _TabsViewState extends State<TabsView> {
       length: 4,
       child: new Scaffold(
           appBar: new AppBar(
+            automaticallyImplyLeading: false,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.more_vert),
+                icon: Icon(Icons.power_settings_new,color: Colors.white70,),
                 onPressed: () {
                   print('Open Settings');
+                  signOutGoogle();
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) {
+                    return LoginPage();
+                  }), ModalRoute.withName('/'));
                 },
               )
             ],

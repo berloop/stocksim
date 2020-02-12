@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stocksim/main.dart';
 import 'package:stocksim/test.dart';
-import 'main.dart';
 import 'models/sign_in.dart';
 
 class LoginPage extends StatefulWidget {
@@ -37,11 +37,12 @@ class _LoginPageState extends State<LoginPage> {
         child: RaisedButton(
           onPressed: () {
             //signing in with google..
+            
             signInWithGoogle().whenComplete(() {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
-                    return TestPage();
+                    return MyHomePage();
                   },
                 ),
               );
