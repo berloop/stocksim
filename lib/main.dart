@@ -346,7 +346,7 @@ class _NewsFeedsState extends State<NewsFeeds> {
 
   void getData() async {
     http.Response response = await http.get(
-        "https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=801889422ea1495ba303cce1978429f9");
+        "https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=API_KEY_HERE");
     setState(() {
       _newslist = News.fromJson(json.decode(response.body)).articles;
     });
